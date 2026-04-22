@@ -1,0 +1,482 @@
+/* =========================================================================
+   Contact Management Dashboard — Stylesheet
+   =========================================================================
+   Structure:
+   1. Google Fonts import
+   2. CSS Reset & Variables
+   3. Bootstrap overrides
+   4. Layout — app-wrapper, panels
+   5. Contact List panel components
+   6. Contact Detail panel components
+   7. Utility classes
+   8. Loading & empty states
+   9. Responsive / mobile
+   ========================================================================= */
+
+/* 1. GOOGLE FONTS
+   ========================================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+/* 2. CSS RESET & VARIABLES
+   ========================================================================= */
+:root {
+  --primary:        #6B59CC;
+  --primary-hover:  #4f419b;
+  --primary-light:  rgba(107, 89, 204, 0.10);
+  --success:        #28C76F;
+  --warning:        #FF9F43;
+  --text-dark:      #1A1C1D;
+  --text-muted:     #8083A3;
+  --bg-light:       #F8F7FF;
+  --border-color:   #ECEEF5;
+  --white:          #FFFFFF;
+  --panel-width:    380px; /* width of the contacts list sidebar */
+  --header-height:  72px;
+  --radius:         8px;
+  --shadow-sm:      0 1px 4px rgba(0,0,0,.06);
+  --shadow-md:      0 4px 20px rgba(0,0,0,.08);
+  --transition:     0.18s ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  outline: none !important;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-dark);
+  background: var(--white);
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* 3. BOOTSTRAP OVERRIDES
+   ========================================================================= */
+.bg-light {
+  background: var(--bg-light) !important;
+}
+
+.text-light {
+  color: var(--text-muted) !important;
+}
+
+.border-light {
+  border-color: var(--border-color) !important;
+}
+
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  font-size: 14px;
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.fs-12 { font-size: 12px !important; }
+.fs-14 { font-size: 14px !important; }
+.fs-16 { font-size: 16px !important; }
+.lh-150 { line-height: 1.5 !important; }
+.fw-semibold { font-weight: 600 !important; }
+.opacity-40 { opacity: 0.4; }
+.word-break-all { word-break: break-all; }
+
+/* 4. LAYOUT
+   ========================================================================= */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(255, 255, 255, 0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.app-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* LEFT PANEL */
+.contacts-panel {
+  width: var(--panel-width);
+  min-width: var(--panel-width);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border-color);
+  background: var(--bg-light);
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* RIGHT PANEL */
+.details-panel {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  background: var(--white);
+}
+
+/* 5. CONTACT LIST PANEL COMPONENTS
+   ========================================================================= */
+
+/* --- Panel Header --- */
+.panel-header {
+  flex-shrink: 0;
+  height: var(--header-height);
+  background: var(--bg-light);
+}
+
+.menu-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: var(--radius) !important;
+  transition: background var(--transition), color var(--transition);
+}
+
+.menu-btn:hover {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+  border-color: transparent !important;
+}
+
+/* --- Search Area --- */
+.search-area {
+  flex-shrink: 0;
+}
+
+.search-input-wrap {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 13px;
+  z-index: 1;
+}
+
+.search-field {
+  padding-left: 36px !important;
+  border-radius: var(--radius) !important;
+  font-size: 14px;
+  background: var(--white) !important;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.search-field:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(107, 89, 204, 0.12) !important;
+}
+
+/* --- Mock data badge --- */
+.mock-badge {
+  background: #FFF8E1;
+  border: 1px solid #FFD54F;
+  border-radius: var(--radius);
+  color: #7A6000;
+  font-size: 11px;
+  padding: 6px 10px;
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+/* --- Visual divider line (matches Figma) --- */
+.panel-divider-line {
+  height: 1px;
+  background: var(--border-color);
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+/* --- Scrollable contact list --- */
+.contact-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 8px !important;
+}
+
+.contact-list::-webkit-scrollbar {
+  width: 4px;
+}
+.contact-list::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+/* --- Individual contact row --- */
+.contact-item {
+  border-radius: var(--radius);
+  padding: 10px 8px !important;
+  cursor: pointer;
+  transition: background var(--transition);
+  border: 1px solid transparent;
+  user-select: none;
+  margin-bottom: 2px;
+}
+
+.contact-item:hover {
+  background: var(--primary-light);
+}
+
+.contact-item:focus-visible {
+  outline: 2px solid var(--primary) !important;
+  outline-offset: 2px;
+}
+
+.contact-item.active {
+  background: var(--primary-light);
+  border-color: rgba(107, 89, 204, 0.15);
+}
+
+.contact-item.active b,
+.contact-item.active p {
+  color: var(--primary);
+}
+
+/* --- Status dot --- */
+.status {
+  width: 9px;
+  height: 9px;
+  bottom: -2px;
+  right: -2px;
+  border: 2px solid var(--white) !important;
+  flex-shrink: 0;
+}
+
+/* --- Thumb (small avatar wrapper) --- */
+.thumb {
+  flex-shrink: 0;
+  position: relative;
+  display: inline-flex;
+}
+
+/* --- Action buttons in each row --- */
+.three-btns .btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background var(--transition), color var(--transition);
+  font-size: 13px;
+}
+
+.three-btns .btn:hover,
+.contact-item.active .three-btns .btn {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+  border-color: transparent !important;
+}
+
+/* 6. CONTACT DETAIL PANEL COMPONENTS
+   ========================================================================= */
+
+.contact-details-inner {
+  min-height: 100%;
+}
+
+/* --- Detail header area --- */
+.contact-detail-header {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* --- Large avatar --- */
+.thumb-lg {
+  flex-shrink: 0;
+}
+
+/* --- Detail rows (Bio, Email, Phone, etc.) --- */
+.detail-row {
+  align-items: flex-start;
+}
+
+.detail-label {
+  min-width: 60px;
+  text-align: right;
+  font-size: 13px;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+/* --- Primary badge --- */
+.badge-primary-label {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* --- Empty state (no contact selected) --- */
+.empty-state-details {
+  min-height: 60vh;
+}
+
+/* 7. AVATAR INITIALS FALLBACK
+   ========================================================================= */
+.avatar-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--white);
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+/* Large avatar initials */
+.thumb-lg .avatar-initials {
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+
+/* 8. LOADING & EMPTY STATES
+   ========================================================================= */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+.empty-state {
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+.empty-state i {
+  display: block;
+  margin-bottom: 12px;
+  opacity: 0.4;
+}
+
+/* --- Back button (mobile) --- */
+.back-btn {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--white);
+  border-bottom: 1px solid var(--border-color);
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 14px;
+  display: none; /* hidden on desktop */
+}
+
+/* 9. RESPONSIVE — MOBILE FIRST
+   =========================================================================
+   SIMPLIFIED: Full cross-device support would include:
+   - Testing on real iOS/Android devices
+   - Touch gesture navigation (swipe to go back)
+   - Reduced-motion media query support
+   - Font size scaling for accessibility (rem units throughout)
+   ========================================================================= */
+
+/* Tablet — stack panels vertically */
+@media (max-width: 767px) {
+
+  .app-wrapper {
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contacts-panel {
+    width: 100%;
+    min-width: 100%;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    transition: transform var(--transition);
+  }
+
+  .details-panel {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+  }
+
+  /* When a contact is selected, slide detail panel in */
+  .app-wrapper.detail-open .details-panel {
+    transform: translateX(0);
+  }
+
+  /* Show back button on mobile */
+  .back-btn {
+    display: block;
+  }
+}
+
+/* Small phones */
+@media (max-width: 400px) {
+  .contact-detail-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .detail-label {
+    min-width: 52px;
+  }
+}
