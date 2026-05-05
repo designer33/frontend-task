@@ -1,0 +1,26 @@
+# Angular cache
+.angular/
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Node dependencies
+/node_modules
+
+# IDEs and editors
+/.idea
+/.project
+/.classpath
+/.cproject
+/.settings
+/.vscode
+/*.launch
+/*.tmproj
+/.history
+
+# System Files
+.DS_Store
+Thumbs.db

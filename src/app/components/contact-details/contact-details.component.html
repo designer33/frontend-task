@@ -1,0 +1,148 @@
+<main class="details-panel" aria-label="Contact details" aria-live="polite">
+
+  <!-- Mobile back button -->
+  <button id="detail-back-btn"
+          class="back-btn btn text-light d-md-none"
+          aria-label="Back to contact list"
+          (click)="onBack.emit()">
+    <i class="fa fa-arrow-left me-2" aria-hidden="true"></i> Back
+  </button>
+
+  <!-- ── Empty / welcome state ────────────────────────────────────── -->
+  <div *ngIf="!contact"
+       id="contact-details"
+       class="contact-details-inner p-4 p-lg-5">
+    <div class="empty-state-details d-flex flex-column align-items-center justify-content-center h-100 text-light">
+      <div class="empty-icon mb-4">
+        <i class="fa fa-address-card fa-4x" style="color:#ECEEF5;"></i>
+      </div>
+      <h5 class="fw-bold mb-2" style="color:#8083A3;">Select a contact</h5>
+      <p class="text-center px-4" style="max-width:280px;">
+        Choose a contact from the list on the left to view their details here.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Loading emails state ─────────────────────────────────────── -->
+  <div *ngIf="contact && loadingEmails"
+       id="contact-details"
+       class="contact-details-inner p-4 p-lg-5">
+    <div class="d-flex flex-column align-items-center justify-content-center h-100 text-light">
+      <div class="loading-spinner mb-3"></div>
+      <p>Loading {{ contact.firstName }}'s details…</p>
+    </div>
+  </div>
+
+  <!-- ── Full contact detail view ──────────────────────────────────── -->
+  <div *ngIf="contact && !loadingEmails"
+       id="contact-details"
+       class="contact-details-inner p-4 p-lg-5">
+
+    <!-- Header: avatar + name + action buttons -->
+    <div class="contact-detail-header d-flex gap-3 align-items-start">
+      <div class="thumb-lg flex-shrink-0">
+        <app-avatar [contact]="contact" size="large"></app-avatar>
+      </div>
+      <div class="flex-grow-1 ms-2">
+        <strong class="fs-4 fw-bold d-block mb-1">
+          {{ contact.firstName }} {{ contact.lastName }}
+        </strong>
+        <span class="text-light d-block mb-3">{{ contact.jobTitle }}</span>
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn px-3 rounded-3 btn-primary fs-14 fw-semibold" aria-label="Send message">
+            <i class="fa fa-comments me-1" aria-hidden="true"></i> Message
+          </button>
+          <button class="btn bg-white rounded-3 border border-light text-light menu-btn"
+                  title="Call" aria-label="Call contact">
+            <i class="fa fa-phone-alt" aria-hidden="true"></i>
+          </button>
+          <button class="btn bg-white rounded-3 border border-light text-light menu-btn"
+                  title="Schedule meeting" aria-label="Schedule meeting">
+            <i class="fa fa-calendar-alt" aria-hidden="true"></i>
+          </button>
+          <button class="btn bg-white rounded-3 border border-light text-light menu-btn"
+                  title="More options" aria-label="More options">
+            <i class="fa fa-ellipsis" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bio -->
+    <div *ngIf="contact.bio" class="detail-row d-flex gap-4 mt-4">
+      <span class="detail-label text-light text-end">Bio</span>
+      <p class="lh-150 mb-0">{{ contact.bio }}</p>
+    </div>
+
+    <!-- Email addresses -->
+    <div *ngIf="emails.length > 0" class="detail-row d-flex gap-4 mt-4">
+      <span class="detail-label text-light text-end">Email</span>
+      <div class="d-flex justify-content-between align-items-start w-100 gap-2">
+        <div class="d-flex gap-2 flex-column">
+          <p *ngIf="primaryEmail" class="mb-0 lh-150 fw-semibold">{{ primaryEmail.email }}</p>
+          <p *ngFor="let e of otherEmails" class="mb-0 lh-150 text-light">{{ e.email }}</p>
+        </div>
+        <span *ngIf="primaryEmail"
+              class="badge-primary-label bg-light rounded-2 py-1 px-3 fw-semibold text-light flex-shrink-0">
+          Primary
+        </span>
+      </div>
+    </div>
+
+    <!-- Dial -->
+    <div *ngIf="contact.dial" class="detail-row d-flex gap-4 mt-4">
+      <span class="detail-label text-light text-end">Dial</span>
+      <p class="mb-0 lh-150">{{ contact.dial }}</p>
+    </div>
+
+    <!-- Meeting link -->
+    <div *ngIf="contact.meeting" class="detail-row d-flex gap-4 mt-4">
+      <span class="detail-label text-light text-end">Meeting</span>
+      <a [href]="contact.meeting" target="_blank" rel="noopener noreferrer"
+         class="text-primary lh-150 word-break-all">
+        {{ contact.meeting }}
+      </a>
+    </div>
+
+    <!-- Phone numbers -->
+    <div *ngIf="contact.phone && contact.phone.length > 0" class="detail-row d-flex gap-4 mt-4">
+      <span class="detail-label text-light text-end">Phone</span>
+      <div class="d-flex justify-content-between align-items-start w-100 gap-2">
+        <div class="d-flex gap-2 flex-column">
+          <p *ngFor="let ph of contact.phone; let i = index"
+             class="mb-0 lh-150"
+             [class.fw-semibold]="i === 0"
+             [class.text-light]="i > 0">
+            {{ ph }}
+          </p>
+        </div>
+        <span *ngIf="primaryPhone"
+              class="badge-primary-label bg-light rounded-2 py-1 px-3 fw-semibold text-light flex-shrink-0">
+          Primary
+        </span>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div *ngIf="contact.address" class="detail-row d-flex gap-4 mt-4">
+      <span class="detail-label text-light text-end">Address</span>
+      <p class="mb-0 lh-150">{{ contact.address }}</p>
+    </div>
+
+    <!-- Social links -->
+    <div *ngIf="socialEntries.length > 0" class="detail-row d-flex gap-4 mt-4 align-items-center">
+      <span class="detail-label text-light text-end">Social</span>
+      <div class="d-flex gap-2 flex-wrap">
+        <a *ngFor="let s of socialEntries"
+           [href]="s.url"
+           target="_blank" rel="noopener noreferrer"
+           class="btn bg-white rounded-3 border border-light text-light menu-btn"
+           [title]="s.network"
+           [attr.aria-label]="s.network + ' profile'">
+          <i [class]="s.iconClass" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</main>

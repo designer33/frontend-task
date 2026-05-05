@@ -1,0 +1,130 @@
+<aside class="contacts-panel bg-light" aria-label="Contacts list">
+
+  <!-- Header -->
+  <header class="panel-header d-flex justify-content-between align-items-center p-4 border-bottom border-light">
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn bg-white rounded-3 border border-light text-light menu-btn"
+              title="Menu" aria-label="Open navigation menu">
+        <i class="fa fa-bars" aria-hidden="true"></i>
+      </button>
+      <h1 class="fs-4 fw-bold mb-0">Contacts</h1>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button id="prev-btn"
+              class="btn bg-white rounded-3 border border-light text-light menu-btn"
+              [class.opacity-40]="isPrevDisabled"
+              title="Previous page" aria-label="Previous page"
+              [disabled]="isPrevDisabled"
+              (click)="prevPage()">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+      </button>
+      <button id="next-btn"
+              class="btn bg-white rounded-3 border border-light text-light menu-btn"
+              [class.opacity-40]="isNextDisabled"
+              title="Next page" aria-label="Next page"
+              [disabled]="isNextDisabled"
+              (click)="nextPage()">
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Search area -->
+  <div class="search-area p-4 pb-2 position-relative">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+      <div class="search-input-wrap flex-grow-1 position-relative">
+        <i class="fa fa-search search-icon text-light" aria-hidden="true"></i>
+        <input
+          id="search-input"
+          type="search"
+          class="form-control bg-white border border-light shadow-none search-field"
+          placeholder="Search by name or phone…"
+          aria-label="Search contacts by name, email or phone"
+          autocomplete="off"
+          [(ngModel)]="searchQuery"
+          (input)="onSearch()"
+          (keydown)="onSearchKeydown($event)"
+        />
+      </div>
+    </div>
+    <small id="contact-count" class="text-light d-block mt-2 ps-1">{{ contactCountLabel }}</small>
+
+    <!-- Mock data badge -->
+    <div *ngIf="usingMockData" id="mock-badge" class="mock-badge" role="alert">
+      <i class="fa fa-info-circle me-1" aria-hidden="true"></i>
+      Showing demo data — configure mockapi.io URL in the service to use live data
+    </div>
+  </div>
+
+  <div class="panel-divider-line" aria-hidden="true"></div>
+
+  <!-- Contact list -->
+  <div id="contact-list" class="contact-list px-3 pb-4" role="list" aria-label="Contact list">
+
+    <!-- Empty state -->
+    <div *ngIf="filteredContacts.length === 0" class="empty-state text-center py-5 text-light">
+      <i class="fa fa-search fa-2x mb-3"></i>
+      <p>No contacts found</p>
+    </div>
+
+    <!-- Contact rows -->
+    <div
+      *ngFor="let contact of pageItems; trackBy: trackById"
+      class="contact-item d-flex justify-content-between align-items-center py-3 px-1 rounded-2"
+      [class.active]="contact.id === selectedId"
+      [attr.data-id]="contact.id"
+      role="button"
+      tabindex="0"
+      [attr.aria-label]="'View ' + contact.firstName + ' ' + contact.lastName + 's details'"
+      (click)="selectContact(contact.id)"
+      (keydown.enter)="selectContact(contact.id)"
+      (keydown.space)="$event.preventDefault(); selectContact(contact.id)"
+    >
+      <!-- Left: avatar + name -->
+      <div class="d-flex gap-3 align-items-center">
+        <div class="thumb position-relative rounded-2 flex-shrink-0">
+          <app-avatar [contact]="contact" size="small"></app-avatar>
+          <span
+            class="status position-absolute rounded-circle d-block border-2 border-white"
+            [class.bg-success]="contact.status === 'online'"
+            [class.bg-warning]="contact.status !== 'online'"
+            [attr.aria-label]="contact.status"
+          ></span>
+        </div>
+        <div class="d-flex flex-column gap-1">
+          <b>{{ contact.firstName }} {{ contact.lastName }}</b>
+          <p class="text-light mb-0 fs-12">{{ contact.jobTitle }}</p>
+        </div>
+      </div>
+
+      <!-- Right: action buttons -->
+      <div class="d-flex gap-2 align-items-center three-btns">
+        <button class="btn bg-white border border-light text-light action-btn"
+                data-action="message"
+                [attr.data-id]="contact.id"
+                title="Message"
+                [attr.aria-label]="'Message ' + contact.firstName"
+                (click)="$event.stopPropagation()">
+          <i class="fa fa-comments" aria-hidden="true"></i>
+        </button>
+        <button class="btn bg-white border border-light text-light action-btn"
+                data-action="call"
+                [attr.data-id]="contact.id"
+                title="Call"
+                [attr.aria-label]="'Call ' + contact.firstName"
+                (click)="$event.stopPropagation()">
+          <i class="fa fa-phone-alt" aria-hidden="true"></i>
+        </button>
+        <button class="btn bg-white border border-light text-light action-btn"
+                data-action="more"
+                [attr.data-id]="contact.id"
+                title="More options"
+                [attr.aria-label]="'More options for ' + contact.firstName"
+                (click)="$event.stopPropagation()">
+          <i class="fa fa-ellipsis" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</aside>

@@ -1,0 +1,35 @@
+<!-- Full-screen loading overlay -->
+<div *ngIf="isLoading"
+     class="loading-overlay"
+     role="status" aria-live="polite">
+  <div class="loading-spinner"></div>
+  <p class="mt-3 text-light">Loading contacts…</p>
+</div>
+
+<!-- App shell -->
+<div id="app-wrapper"
+     class="app-wrapper"
+     [class.detail-open]="detailOpen">
+
+  <!-- Left panel: contact list -->
+  <app-contact-list
+    [contacts]="contacts"
+    [selectedId]="selectedContact?.id ?? null"
+    [usingMockData]="usingMockData"
+    (contactSelected)="onContactSelected($event)"
+  ></app-contact-list>
+
+  <!-- Right panel: contact details -->
+  <app-contact-details
+    [contact]="selectedContact"
+    (onBack)="onBack()"
+  ></app-contact-details>
+
+</div>
+
+<!-- Fatal error state -->
+<div *ngIf="loadError && !isLoading"
+     class="empty-state text-center py-5 text-danger">
+  <i class="fa fa-exclamation-circle fa-2x mb-3"></i>
+  <p>Failed to load contacts. Please refresh the page.</p>
+</div>
