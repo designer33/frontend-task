@@ -10,7 +10,7 @@
 
   <!-- ── Empty / welcome state ────────────────────────────────────── -->
   <div *ngIf="!contact"
-       id="contact-details"
+       id="contact-details-empty"
        class="contact-details-inner p-4 p-lg-5">
     <div class="empty-state-details d-flex flex-column align-items-center justify-content-center h-100 text-light">
       <div class="empty-icon mb-4">
@@ -25,7 +25,7 @@
 
   <!-- ── Loading emails state ─────────────────────────────────────── -->
   <div *ngIf="contact && loadingEmails"
-       id="contact-details"
+       id="contact-details-loading"
        class="contact-details-inner p-4 p-lg-5">
     <div class="d-flex flex-column align-items-center justify-content-center h-100 text-light">
       <div class="loading-spinner mb-3"></div>
@@ -35,7 +35,7 @@
 
   <!-- ── Full contact detail view ──────────────────────────────────── -->
   <div *ngIf="contact && !loadingEmails"
-       id="contact-details"
+       id="contact-details-view"
        class="contact-details-inner p-4 p-lg-5">
 
     <!-- Header: avatar + name + action buttons -->
